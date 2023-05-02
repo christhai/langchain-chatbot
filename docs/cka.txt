@@ -1,0 +1,164 @@
+Master at least 2 core CPUs & 4GB RAM
+Nodes  at least 1 core CPUs & 4GB RAM
+
+//Installing runtime
+https://kubernetes.io/docs/setup/cri/#docker
+
+//Installing kubeadm, kubelet and kubectl
+https://kubernetes.io/docs/setup/independent/install-kubeadm/#installing-kubeadm-kubelet-and-kubectl
+
+//On Master
+sudo kubeadm init --pod-network-cidr=<> --apiserver-advertise-address=<ip-address-of-master>
+// For starting a Calico CNI: 192.168.0.0/16 or For starting a Flannel CNI: 10.244.0.0/16
+
+
+//Run the following commands as normal user
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+kubectl get nodes
+kubectl get pods --all-namespaces
+kubectl get -o wide pods --all-namespaces
+
+//Create POD based on Calico
+kubectl apply -f https://docs.projectcalico.org/v3.3/getting-started/kubernetes/installation/hosted/rbac-kdd.yaml
+kubectl apply -f https://docs.projectcalico.org/v3.3/getting-started/kubernetes/installation/hosted/kubernetes-datastore/calico-networking/1.7/calico.yaml
+
+//Create the dashboard
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/recommended/kubernetes-dashboard.yaml
+
+//enable proxy to access dashboard
+kubectl proxy
+
+//Create a service account for your dashboard
+kubectl create serviceaccount dashboard -n default
+
+//Add cluster binding rules for your roles
+kubectl create clusterrolebinding dashboard-admin -n default \
+  --clusterrole=cluster-admin \
+  --serviceaccount=default:dashboard
+
+//Get the secret key for the dashboard token password
+kubectl get secrets $(kubectl get serviceaccount dashboard -o jsonpath="{.secrets[0].name}") -o jsonpath="{.data.token}" |base64 --decode
+
+//Access the dashboard
+http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/
+
+//Node add to the cluster
+sudo kubeadm join <master-ip>:<master-port> --token <token> --discovery-token-ca-cert-hash sha256:<hash>
+
+//Cluster is up!
+
+//On Master, deploy a NGINX app
+kubectl create deployment nginx --image=nginx            //create a deployment
+kubectl get deployments                                  //verify deployment
+kubectl describe deployment nginx                        //details of deployment
+kubectl create service nodeport nginx --tcp=80:80        //create service
+kubectl get svc                                          //check service
+kubectl delete deployment nginx                          //delete deployment
+
+
+//Create deplyment with yaml
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: rss
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: rss
+    spec:
+      containers:
+      - name: front-end
+        image: nginx
+        ports:
+        - containerPort: 80
+      - name: rss-reader
+        image: nickchase/rss-php-nginx:v1 
+        ports:
+        - containerPort: 88
+
+
+kubectl create -f deployment.yaml
+
+
+
+// 1. Create deployment and service
+
+// 2. 列出环境内所有的pv 并以 name字段排序
+kubectl get pv --sort-by=.metadata.name
+
+// 3. 找到一个label的所有pod，并把结果写到指定文件中
+kubectl get pods -l app=nginx
+
+// 4. 列出k8s可用的节点，不包含不可调度的 和 NoReachable的节点，并把数字写入到文件里
+kubectl get nodes
+https://kubernetes.io/docs/reference/kubectl/cheatsheet/
+
+// 5. 创建一个pv，类型是hostPath
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv
+spec:
+  capacity:
+    storage: 1Gi  
+  accessModes:
+    - ReadOnlyMany
+  hostPath:
+    path: /data
+
+// 6. 给出一个集群，排查出集群的故障，connect refuse
+没做出来，可能是认证问题
+
+// 7. 给出一个失联节点集群，排查节点故障，恢复集群
+kubectl get nodes
+kubectl describe node node1
+ssh node1
+kubelete service not start
+
+//8. 创建一个pod名称为nginx，并将其调度到节点为 disk=ssd上
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+  nodeSelector:
+    disktype: ssd
+
+//9. 提供一个pod的yaml，要求添加Init Container
+Init Container的作用是创建一个空文件，pod的Containers判断文件是否存在，不存在则退出
+https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
+
+//10. 创建一个nginx的Workload，保证其在每个节点上运行
+daemonset
+https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
+
+//11. 将deployment为nginx-app的副本数从1变成4
+kubectl scale  --replicas=4 deployment nginx-app
+
+//12. 创建Secret 名为mysecret，内含有password字段，值为xx，然后 在pod里 使用ENV进行调用
+https://kubernetes.io/docs/concepts/configuration/secret/
+
+//13. TLS Bootstrapping
+https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet-tls-bootstrapping/
+https://mritd.me/2018/08/28/kubernetes-tls-bootstrapping-with-bootstrap-token/
+
+//14. 使用etcd 备份功能备份etcd，提供endpoint 证书
+https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/#backing-up-an-etcd-cluster
+ETCDCTL_API=3 etcdctl --endpoints https://127.0.0.1:2379 \
+--cacert=ca.pem --cert=cert.pem --key=key.pem \
+snapshot save snapshotdb
+
+//15. 其他，静态pod ／ 更新image，然后回滚
+https://kubernetes.io/docs/tasks/administer-cluster/static-pod/
+https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/

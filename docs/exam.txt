@@ -1,0 +1,58 @@
+Exam Tips for
+Certified Kubernetes Administrator (CKA) and Certified Kubernetes Application Developer (CKAD)
+Exam Details
+● You can take the CKA exam and the CKAD exam from any qualifying computer, anywhere there is internet, almost any time. No need to go to a test center. (see Hardware Compatibility Check below)
+● The online exams consists of a set of performance-based items (problems) to be solved on the command line. CKA exam consists of 24 problems, CKAD exam consists of 19 problems.
+● The exam is expected to take 3 hours (CKA) / 2 hours (CKAD) to complete.
+What You Need For Your Exam
+● Make sure your ID is ready for the exam. You may use any current, non-expired government ID that has your photo and full name in the Latin alphabet
+● Exams are delivered online and closely monitored by proctors via webcam, audio, and remote screen viewing.
+● Candidates must provide their own front-end hardware to take exams, including a computer with:
+● Chrome or Chromium browser
+● reliable internet access
+● webcam
+● microphone
+Hardware Compatibility Check
+● Candidates should ​run the compatibility check tool provided​ by the Exam Proctoring Partner to verify that their hardware meets the minimum requirements.
+● The tool is located at​ h​ ttps://www.examslocal.com/ScheduleExam/Home/CompatibilityCheck​. Select “Linux Foundation” as the Exam Sponsor and “CKA” or “CKAD” as the Exam.
+● At this time, only Chrome and Chromium browsers are supported and candidates need a functioning webcam so that the proctor can see them.
+Exam Results
+● Results will be emailed 36 hours from the time that the exam was completed.
+● Results will also be made available on My Portal.
+ 
+Resources allowed during exam
+● Candidates may use their Chrome or Chromium browser to open one additional tab in order to access assets at​ ​https://kubernetes.io/docs/​ and its subdomain, ​https://github.com/kubernetes/ and its subdomains, or​ https://kubernetes.io/blog/​. No other tabs may be opened and no other sites may be navigated to. ​The allowed sites above may contain links that point to external sites. It is the responsibility of the candidate not to click on any links that cause them to navigate to a domain that is not allowed.
+Please see the ​Candidate Handbook​ for additional information covering policies, procedures and rules during the exam.
+Answers to Frequently Asked Questions (FAQ) can be found ​here
+If you cannot find an answer to your question in the Candidate Handbook or FAQ, you may contact Customer Support at ​certificationsupport@cncf.io
+Technical Instructions
+You may access these instructions at any time while taking the exam by typing 'man lf_exam'.
+1. Root privileges can be obtained by running 'sudo −i'.
+2. Rebooting of your server IS permitted at anytime.
+3. Do not stop or tamper with the gateone process as this will END YOUR EXAM SESSION.
+4. Do not block incoming ports 8080/tcp, 4505/tcp and 4506/tcp. This includes firewall rules that are
+found within the distribution's default firewall configuration files as well as interactive firewall
+commands.
+5. Use Ctrl+Alt+W instead of Ctrl+W.
+5.1. Ctrl+W is a keyboard shortcut that will close the current tab in Google Chrome.
+6. Ctrl+C & and Ctrl+V are not supported in your exam terminal, nor is copy and pasting large
+amounts of text. To copy and paste limited amounts of text (1−2 lines) please use;
+6.1. For Linux: select text for copy and middle button for paste (or both left and right
+simultaneously if you have no middle button).
+6.2. For Mac: ⌘+C to copy and ⌘+V to paste.
+6.3. For Windows: Ctrl+Insert to copy and Shift+Insert to paste.
+6.4. In addition, you might find it helpful to use the Notepad (see top menu under 'Exam
+Controls') to manipulate text before pasting to the command line.
+7. Installation of services and applications included in this exam may require modification of system
+security policies to successfully complete.
+8. Only a single terminal console is available during the exam. Terminal multiplexers such as GNU
+Screen and tmux can be used to create virtual consoles.
+General Notes
+● The first exam item contains instructions and notes on the exam environment. Ensure you read this item thoroughly before commencing your exam.
+● You can use the question navigation features to return to the first exam item at any time.
+CKA & CKAD Environment
+● Each question on this exam must be completed on a designated cluster/configuration context.
+● To minimize switching, the questions are grouped so that all questions on a given cluster appear
+consecutively.
+● There are six clusters (CKA) / four clusters (CKAD) that comprise the exam environment, made
+up of varying numbers of containers, as follows:
