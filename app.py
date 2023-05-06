@@ -3,8 +3,8 @@ from langchain import OpenAI
 import gradio as gr
 import sys
 import os
-os.chdir(r'/home/ubuntu/langchain')  # 文件路径
-os.environ["OPENAI_API_KEY"] = 'sk-xxxxxxxxxxxxxxx'
+os.chdir(r'/app')  # 文件路径
+# os.environ["OPENAI_API_KEY"] = 'sk-xxxxxxxxxxxxxxx'
 def construct_index(directory_path):
     max_input_size = 4096
     num_outputs = 2000
