@@ -1,4 +1,4 @@
-llama-index
-langchain
-gradio
-openai
+llama-index==0.5.27
+langchain==0.0.142
+gradio==3.28.1
+openai==0.27.6
